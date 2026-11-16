@@ -1,0 +1,22 @@
+{
+  "short_name": "HillGuard",
+  "name": "HillGuard - Landslide Monitoring & Road Safety Platform",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#123B2A",
+  "theme_color": "#123B2A",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/"
+}

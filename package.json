@@ -1,0 +1,22 @@
+{
+  "name": "hillguard-monorepo",
+  "version": "1.0.0",
+  "description": "HillGuard – Real-Time Landslide Detection & Road-Blockage Alert System (NIT Arunachal Pradesh)",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "seed": "cd backend && npm run seed",
+    "test:backend": "cd backend && npm test",
+    "build:frontend": "cd frontend && npm run build"
+  },
+  "keywords": [
+    "landslide-monitoring",
+    "iot",
+    "esp32",
+    "arunachal-pradesh",
+    "disaster-management",
+    "nit-arunachal-pradesh"
+  ],
+  "author": "Divyanshu Gupta, Riya Yadav, Jainesh Birla, Nabam Rana, Ngilyang Nancy (Project Guide: Dr. Koj Sambyo)",
+  "license": "ISC"
+}
