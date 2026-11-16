@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { Report, Road, Alert } = require('../models');
 const { saveBase64Image } = require('../middleware/upload');
 const auditService = require('../services/auditService');
@@ -39,7 +40,7 @@ const submitReport = async (req, res, next) => {
 
     // Match or find Road
     let road = null;
-    if (roadId) {
+    if (roadId && mongoose.isValidObjectId(roadId)) {
       road = await Road.findById(roadId);
     }
     if (!road && roadName) {
@@ -69,8 +70,8 @@ const submitReport = async (req, res, next) => {
       description,
       imageUrl,
       location: {
-        latitude: Number(latitude),
-        longitude: Number(longitude),
+        latitude: Number(latitude) || 27.0844,
+        longitude: Number(longitude) || 93.6053,
         accuracy: Number(accuracy) || 10,
         capturedViaGPS: true
       },

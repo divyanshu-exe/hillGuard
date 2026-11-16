@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import { getQueuedReports, removeQueuedReport } from '../services/offlineDb';
+import { getQueuedReports, removeQueuedReport, clearAllQueuedReports } from '../services/offlineDb';
 import api from '../services/api';
 
 interface OfflineContextType {
@@ -8,6 +8,7 @@ interface OfflineContextType {
   isSyncing: boolean;
   queuedCount: number;
   syncPendingReports: () => Promise<void>;
+  clearQueue: () => Promise<void>;
   cachedTimestamp: string | null;
   setCachedTimestamp: (ts: string | null) => void;
 }
@@ -23,15 +24,26 @@ export const OfflineProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const checkQueueCount = useCallback(async () => {
     const queue = await getQueuedReports();
     setQueuedCount(queue.length);
+    return queue.length;
   }, []);
+
+  const clearQueue = useCallback(async () => {
+    await clearAllQueuedReports();
+    await checkQueueCount();
+    toast.success('Cleared local offline reports queue.');
+  }, [checkQueueCount]);
 
   const syncPendingReports = useCallback(async () => {
     if (!navigator.onLine || isSyncing) return;
     const queue = await getQueuedReports();
-    if (queue.length === 0) return;
+    if (queue.length === 0) {
+      setQueuedCount(0);
+      return;
+    }
 
     setIsSyncing(true);
     let successCount = 0;
+    let failedCount = 0;
 
     for (const report of queue) {
       try {
@@ -50,8 +62,14 @@ export const OfflineProvider: React.FC<{ children: React.ReactNode }> = ({ child
         });
         await removeQueuedReport(report.id);
         successCount++;
-      } catch (err) {
+      } catch (err: any) {
+        failedCount++;
         console.warn(`[Sync] Failed to sync report ${report.id}:`, err);
+        // If server returned 400 (e.g. missing photo or unrecoverable bad data), remove from queue so it doesn't get stuck
+        if (err?.response?.status === 400) {
+          console.warn(`[Sync] Removing unrecoverable report ${report.id} from queue`);
+          await removeQueuedReport(report.id);
+        }
       }
     }
 
@@ -60,6 +78,8 @@ export const OfflineProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     if (successCount > 0) {
       toast.success(`Online sync: Successfully uploaded ${successCount} queued road reports!`, { duration: 5000 });
+    } else if (failedCount > 0 && successCount === 0) {
+      toast.error('Sync failed: Could not connect to reporting server. Will retry when connection stabilizes.');
     }
   }, [isSyncing, checkQueueCount]);
 
@@ -77,7 +97,13 @@ export const OfflineProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
-    checkQueueCount();
+
+    // Initial check & auto-sync if already online
+    checkQueueCount().then((count) => {
+      if (navigator.onLine && count > 0) {
+        syncPendingReports();
+      }
+    });
 
     return () => {
       window.removeEventListener('online', handleOnline);
@@ -92,6 +118,7 @@ export const OfflineProvider: React.FC<{ children: React.ReactNode }> = ({ child
         isSyncing,
         queuedCount,
         syncPendingReports,
+        clearQueue,
         cachedTimestamp,
         setCachedTimestamp
       }}

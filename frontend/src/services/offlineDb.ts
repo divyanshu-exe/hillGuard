@@ -133,3 +133,13 @@ export const removeQueuedReport = async (id: string) => {
     console.warn('[Offline DB] Failed to remove queued report:', e);
   }
 };
+
+// Clear all queued reports
+export const clearAllQueuedReports = async () => {
+  try {
+    const db = await getDB();
+    await db.clear('queuedReports');
+  } catch (e) {
+    console.warn('[Offline DB] Failed to clear queued reports:', e);
+  }
+};
