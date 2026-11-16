@@ -69,6 +69,123 @@ export const CitizenReportModal: React.FC<CitizenReportModalProps> = ({
   const [reporterName, setReporterName] = useState<string>(user?.name || '');
   const [reporterPhone, setReporterPhone] = useState<string>(user?.phone || '');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [useFallbackGps, setUseFallbackGps] = useState<boolean>(false);
+
+  // Find selected road & its corridor coordinates
+  const selectedRoad = roads.find((r) => r._id === selectedRoadId) || roads[0];
+  const roadLat =
+    selectedRoad?.startPoint?.latitude ||
+    (selectedRoad?.coordinates && selectedRoad.coordinates[0]?.latitude) ||
+    27.0844;
+  const roadLng =
+    selectedRoad?.startPoint?.longitude ||
+    (selectedRoad?.coordinates && selectedRoad.coordinates[0]?.longitude) ||
+    93.6053;
+
+  // Determine active coordinates (device GPS or Himalayan Road Corridor Fallback)
+  const isUsingFallback = useFallbackGps || (!latitude && !!gpsError);
+  const activeLat = (!isUsingFallback && latitude) ? latitude : roadLat;
+  const activeLng = (!isUsingFallback && longitude) ? longitude : roadLng;
+
+  // Auto-enable fallback when GPS errors out in offline/no-satellite scenarios
+  useEffect(() => {
+    if (gpsError && !latitude) {
+      setUseFallbackGps(true);
+    }
+  }, [gpsError, latitude]);
+
+  // Demo incident photo generator for viva presentation & offline testing
+  const handleUseDemoPhoto = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 640;
+    canvas.height = 420;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Sky & Mountain background
+    const grad = ctx.createLinearGradient(0, 0, 0, 420);
+    grad.addColorStop(0, '#334155');
+    grad.addColorStop(0.3, '#64748b');
+    grad.addColorStop(0.6, '#473628');
+    grad.addColorStop(1, '#1e1610');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 640, 420);
+
+    // Mountain Ridge
+    ctx.fillStyle = '#2c221a';
+    ctx.beginPath();
+    ctx.moveTo(0, 150);
+    ctx.lineTo(220, 110);
+    ctx.lineTo(390, 170);
+    ctx.lineTo(640, 80);
+    ctx.lineTo(640, 420);
+    ctx.lineTo(0, 420);
+    ctx.closePath();
+    ctx.fill();
+
+    // Landslide Debris Mound across Highway
+    ctx.fillStyle = '#5c3a21';
+    ctx.beginPath();
+    ctx.moveTo(60, 420);
+    ctx.quadraticCurveTo(320, 170, 580, 420);
+    ctx.closePath();
+    ctx.fill();
+
+    // Rocks and Boulders
+    const drawRock = (x: number, y: number, r: number, color: string) => {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#1a1410';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    };
+    drawRock(260, 290, 32, '#483d35');
+    drawRock(340, 310, 44, '#38302a');
+    drawRock(205, 335, 24, '#5c5046');
+    drawRock(400, 335, 28, '#423932');
+    drawRock(300, 355, 36, '#28221c');
+    drawRock(150, 360, 20, '#53473e');
+
+    // Highway Tarmac & Lane divider
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 380, 640, 40);
+    ctx.strokeStyle = '#eab308';
+    ctx.lineWidth = 4;
+    ctx.setLineDash([16, 16]);
+    ctx.beginPath();
+    ctx.moveTo(0, 400);
+    ctx.lineTo(640, 400);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Watermark Header
+    ctx.fillStyle = 'rgba(18, 59, 42, 0.95)';
+    ctx.fillRect(0, 0, 640, 52);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillText('🚨 GROUND TRUTH REPORT: LANDSLIDE & ROCKFALL', 16, 24);
+    ctx.fillStyle = '#86efac';
+    ctx.font = '11px monospace';
+    ctx.fillText(
+      `CORRIDOR: ${roadName || selectedRoad?.name || 'NH-415 Papum Pare Sector'} | GPS: ${activeLat.toFixed(4)}°N, ${activeLng.toFixed(4)}°E`,
+      16,
+      42
+    );
+
+    // Watermark Footer
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+    ctx.fillRect(0, 380, 640, 40);
+    ctx.fillStyle = '#fef08a';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillText(`NIT ARUNACHAL HILLGUARD PILOT • ${new Date().toLocaleString('en-IN')}`, 16, 404);
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    setCapturedPhoto(dataUrl);
+    stopCamera();
+    toast.success('Loaded realistic incident demo photo with ground truth watermark!', { duration: 3000 });
+  };
 
   // Initialize camera and GPS when modal opens
   useEffect(() => {
@@ -117,9 +234,9 @@ export const CitizenReportModal: React.FC<CitizenReportModalProps> = ({
       return;
     }
 
-    // Default GPS to Itanagar coordinates if permission was denied in hill region
-    const finalLat = latitude || 27.0844;
-    const finalLng = longitude || 93.6053;
+    // Use active coordinates (device GPS or Himalayan corridor fallback)
+    const finalLat = activeLat;
+    const finalLng = activeLng;
 
     setIsSubmitting(true);
 
@@ -217,13 +334,23 @@ export const CitizenReportModal: React.FC<CitizenReportModalProps> = ({
                   <div className="absolute top-2 left-2 bg-emerald-600/90 text-white text-[11px] px-2 py-0.5 rounded font-medium flex items-center gap-1 shadow">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Live Snapshot Captured
                   </div>
-                  <button
-                    type="button"
-                    onClick={retakePhoto}
-                    className="absolute bottom-2 right-2 bg-slate-900/90 hover:bg-slate-900 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow transition"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" /> Retake Photo
-                  </button>
+                  <div className="absolute bottom-2 right-2 flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={handleUseDemoPhoto}
+                      className="bg-slate-900/90 hover:bg-slate-900 text-amber-300 text-xs px-2.5 py-1.5 rounded-lg flex items-center gap-1 shadow transition border border-amber-400/30"
+                      title="Load sample landslide photo for viva evaluation"
+                    >
+                      <Eye className="w-3.5 h-3.5" /> Demo Photo
+                    </button>
+                    <button
+                      type="button"
+                      onClick={retakePhoto}
+                      className="bg-slate-900/90 hover:bg-slate-900 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow transition"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" /> Retake Photo
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <>
@@ -244,29 +371,49 @@ export const CitizenReportModal: React.FC<CitizenReportModalProps> = ({
                     <div className="absolute inset-0 p-4 flex flex-col items-center justify-center bg-slate-900 text-center text-xs text-red-400 gap-2">
                       <AlertCircle className="w-8 h-8 text-red-500" />
                       <p>{cameraError}</p>
-                      <button
-                        type="button"
-                        onClick={startCamera}
-                        className="mt-2 px-3 py-1 bg-slate-800 text-white rounded text-xs hover:bg-slate-700"
-                      >
-                        Retry Camera Permission
-                      </button>
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          type="button"
+                          onClick={startCamera}
+                          className="px-3 py-1 bg-slate-800 text-white rounded text-xs hover:bg-slate-700"
+                        >
+                          Retry Camera
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleUseDemoPhoto}
+                          className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded text-xs transition"
+                        >
+                          Use Demo Landslide Photo
+                        </button>
+                      </div>
                     </div>
                   )}
                 </>
               )}
             </div>
 
-            {/* Shutter Button when live camera stream is active */}
-            {!capturedPhoto && stream && (
-              <div className="p-2.5 bg-slate-900/95 flex items-center justify-center border-t border-slate-800">
+            {/* Shutter & Demo Buttons when no photo captured */}
+            {!capturedPhoto && (
+              <div className="p-2.5 bg-slate-900/95 flex flex-wrap items-center justify-center gap-2 border-t border-slate-800">
+                {stream && (
+                  <button
+                    type="button"
+                    onClick={capturePhoto}
+                    className="px-4 py-2 rounded-full bg-red-600 hover:bg-red-700 text-white font-semibold text-xs flex items-center gap-2 shadow-lg transition transform active:scale-95"
+                  >
+                    <Camera className="w-4 h-4" />
+                    Capture Camera Photo
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={capturePhoto}
-                  className="px-5 py-2 rounded-full bg-red-600 hover:bg-red-700 text-white font-semibold text-xs flex items-center gap-2 shadow-lg transition transform active:scale-95"
+                  onClick={handleUseDemoPhoto}
+                  className="px-3.5 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-amber-300 font-semibold text-xs flex items-center gap-1.5 border border-amber-500/30 transition shadow"
+                  title="Generate realistic incident snapshot for viva presentation"
                 >
-                  <Camera className="w-4 h-4" />
-                  Capture Incident Photo
+                  <Eye className="w-3.5 h-3.5 text-amber-400" />
+                  Use Demo Landslide Photo
                 </button>
               </div>
             )}
@@ -281,7 +428,10 @@ export const CitizenReportModal: React.FC<CitizenReportModalProps> = ({
               </span>
               <button
                 type="button"
-                onClick={() => getLocation()}
+                onClick={() => {
+                  setUseFallbackGps(false);
+                  getLocation().catch(() => {});
+                }}
                 disabled={gpsLoading}
                 className="text-[11px] text-emerald-700 hover:text-emerald-800 font-medium flex items-center gap-1"
               >
@@ -290,27 +440,65 @@ export const CitizenReportModal: React.FC<CitizenReportModalProps> = ({
               </button>
             </div>
 
-            {latitude && longitude ? (
-              <div className="text-xs text-slate-600 grid grid-cols-2 gap-2 bg-white p-2 rounded border border-slate-200">
+            {activeLat && activeLng && (latitude || isUsingFallback) ? (
+              <div className="text-xs text-slate-600 grid grid-cols-2 gap-2 bg-white p-2.5 rounded-lg border border-slate-200">
                 <div>
-                  <span className="text-[10px] text-slate-400 block">Latitude</span>
-                  <span className="font-mono font-medium">{latitude.toFixed(5)}° N</span>
+                  <span className="text-[10px] text-slate-400 block font-semibold uppercase">Latitude</span>
+                  <span className="font-mono font-medium text-slate-800">{activeLat.toFixed(5)}° N</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 block">Longitude</span>
-                  <span className="font-mono font-medium">{longitude.toFixed(5)}° E</span>
+                  <span className="text-[10px] text-slate-400 block font-semibold uppercase">Longitude</span>
+                  <span className="font-mono font-medium text-slate-800">{activeLng.toFixed(5)}° E</span>
                 </div>
-                <div className="col-span-2 text-[11px] text-emerald-600 flex items-center gap-1 pt-1 border-t">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  GPS Ground Truthed (Accuracy: ±{Math.round(accuracy || 10)}m)
+                <div className="col-span-2 text-[11px] pt-1.5 border-t border-slate-100 flex items-center justify-between">
+                  {isUsingFallback ? (
+                    <span className="text-amber-700 font-medium flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                      Highway Corridor Fallback ({selectedRoad?.roadCode || 'Corridor Pin'})
+                    </span>
+                  ) : (
+                    <span className="text-emerald-700 font-medium flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      Live Device GPS Truthed (Accuracy: ±{Math.round(accuracy || 10)}m)
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isUsingFallback) {
+                        setUseFallbackGps(false);
+                        getLocation().catch(() => {});
+                      } else {
+                        setUseFallbackGps(true);
+                      }
+                    }}
+                    className="text-[10px] text-emerald-700 hover:text-emerald-900 underline font-medium"
+                  >
+                    {isUsingFallback ? 'Retry Device GPS' : 'Pin Road GPS'}
+                  </button>
                 </div>
               </div>
             ) : (
-              <div className="text-xs text-amber-700 bg-amber-50 p-2 rounded border border-amber-200 flex items-start gap-1.5">
-                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                <span>
-                  {gpsError || 'Acquiring high-accuracy hill GPS fix... Please ensure location permissions are granted.'}
-                </span>
+              <div className="text-xs bg-amber-50 p-2.5 rounded-lg border border-amber-200 space-y-2">
+                <div className="flex items-start gap-1.5 text-amber-800">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="leading-tight">
+                    <p className="font-medium">
+                      {gpsError || 'Acquiring high-accuracy hill GPS fix... Please ensure location permissions are granted.'}
+                    </p>
+                    <p className="text-[10px] text-amber-600 mt-0.5">
+                      (Deep Himalayan gorges & offline browser modes lack satellite lock. You can apply verified highway coordinates below.)
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setUseFallbackGps(true)}
+                  className="w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition"
+                >
+                  <MapPin className="w-3.5 h-3.5" />
+                  Apply {selectedRoad?.roadCode || 'Road'} Highway Corridor GPS ({roadLat.toFixed(4)}° N, {roadLng.toFixed(4)}° E)
+                </button>
               </div>
             )}
           </div>

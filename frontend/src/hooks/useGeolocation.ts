@@ -47,18 +47,18 @@ export const useGeolocation = () => {
         (error) => {
           let errMsg = 'Failed to retrieve GPS location.';
           if (error.code === error.PERMISSION_DENIED) {
-            errMsg = 'GPS permission denied: automatic location verification is unavailable. You may still manually specify the road section.';
+            errMsg = 'GPS permission denied: automatic location verification is unavailable. You may use road corridor coordinates.';
           } else if (error.code === error.POSITION_UNAVAILABLE) {
-            errMsg = 'GPS signal unavailable in this hilly terrain. Retrying...';
+            errMsg = 'GPS signal unavailable in this hilly terrain. You may use road corridor coordinates.';
           } else if (error.code === error.TIMEOUT) {
-            errMsg = 'GPS request timed out. Please check device location settings.';
+            errMsg = 'GPS request timed out. Hilly terrain or offline network mode detected.';
           }
           setLocation((prev) => ({ ...prev, error: errMsg, isLoading: false }));
           reject(new Error(errMsg));
         },
         {
           enableHighAccuracy: true,
-          timeout: 12000,
+          timeout: 6000,
           maximumAge: 10000
         }
       );
