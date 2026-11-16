@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { getQueuedReports, removeQueuedReport, clearAllQueuedReports } from '../services/offlineDb';
 import api from '../services/api';
@@ -7,7 +7,7 @@ interface OfflineContextType {
   isOnline: boolean;
   isSyncing: boolean;
   queuedCount: number;
-  syncPendingReports: () => Promise<void>;
+  syncPendingReports: (isManual?: boolean) => Promise<void>;
   clearQueue: () => Promise<void>;
   cachedTimestamp: string | null;
   setCachedTimestamp: (ts: string | null) => void;
@@ -21,26 +21,34 @@ export const OfflineProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [queuedCount, setQueuedCount] = useState<number>(0);
   const [cachedTimestamp, setCachedTimestamp] = useState<string | null>(null);
 
+  const isSyncingRef = useRef<boolean>(false);
+
   const checkQueueCount = useCallback(async () => {
-    const queue = await getQueuedReports();
-    setQueuedCount(queue.length);
-    return queue.length;
+    try {
+      const queue = await getQueuedReports();
+      setQueuedCount(queue.length);
+      return queue.length;
+    } catch {
+      return 0;
+    }
   }, []);
 
   const clearQueue = useCallback(async () => {
     await clearAllQueuedReports();
     await checkQueueCount();
-    toast.success('Cleared local offline reports queue.');
+    toast.success('Cleared local offline reports queue.', { id: 'offline-sync' });
   }, [checkQueueCount]);
 
-  const syncPendingReports = useCallback(async () => {
-    if (!navigator.onLine || isSyncing) return;
+  const syncPendingReports = useCallback(async (isManual = false) => {
+    if (!navigator.onLine || isSyncingRef.current) return;
+
     const queue = await getQueuedReports();
     if (queue.length === 0) {
       setQueuedCount(0);
       return;
     }
 
+    isSyncingRef.current = true;
     setIsSyncing(true);
     let successCount = 0;
     let failedCount = 0;
@@ -65,51 +73,55 @@ export const OfflineProvider: React.FC<{ children: React.ReactNode }> = ({ child
       } catch (err: any) {
         failedCount++;
         console.warn(`[Sync] Failed to sync report ${report.id}:`, err);
-        // If server returned 400 (e.g. missing photo or unrecoverable bad data), remove from queue so it doesn't get stuck
+        // If server rejected with 400 or report is permanently invalid, delete it so it never loops
         if (err?.response?.status === 400) {
-          console.warn(`[Sync] Removing unrecoverable report ${report.id} from queue`);
+          console.warn(`[Sync] Dropping invalid queued report ${report.id}`);
           await removeQueuedReport(report.id);
         }
       }
     }
 
+    isSyncingRef.current = false;
     setIsSyncing(false);
     await checkQueueCount();
 
     if (successCount > 0) {
-      toast.success(`Online sync: Successfully uploaded ${successCount} queued road reports!`, { duration: 5000 });
-    } else if (failedCount > 0 && successCount === 0) {
-      toast.error('Sync failed: Could not connect to reporting server. Will retry when connection stabilizes.');
+      toast.success(`Online sync: Successfully uploaded ${successCount} queued report(s)!`, {
+        id: 'offline-sync',
+        duration: 4000
+      });
+    } else if (failedCount > 0 && isManual) {
+      // ONLY show error toast if user clicked manually, and use single toast id
+      toast.error('Sync failed: Could not connect to reporting server.', {
+        id: 'offline-sync',
+        duration: 4000
+      });
     }
-  }, [isSyncing, checkQueueCount]);
+  }, [checkQueueCount]);
 
   useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true);
-      toast.success('Internet connection restored. Synchronizing data...', { icon: '🌐' });
-      syncPendingReports();
+      toast.success('Internet connection restored.', { id: 'network-status', duration: 3000 });
+      syncPendingReports(false);
     };
 
     const handleOffline = () => {
       setIsOnline(false);
-      toast.error('Network disconnected. HillGuard switched to Offline PWA Mode.', { icon: '📡' });
+      toast.error('Switched to Offline Mode.', { id: 'network-status', duration: 3000 });
     };
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Initial check & auto-sync if already online
-    checkQueueCount().then((count) => {
-      if (navigator.onLine && count > 0) {
-        syncPendingReports();
-      }
-    });
+    // Initial check on mount once only
+    checkQueueCount();
 
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, [syncPendingReports, checkQueueCount]);
+  }, []); // Run ONCE on mount - prevents infinite re-render loops!
 
   return (
     <OfflineContext.Provider

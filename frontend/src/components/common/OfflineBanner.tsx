@@ -35,7 +35,7 @@ export const OfflineBanner: React.FC = () => {
         <div className="flex items-center gap-2">
           {queuedCount > 0 && isOnline && (
             <button
-              onClick={() => syncPendingReports()}
+              onClick={() => syncPendingReports(true)}
               disabled={isSyncing}
               className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-950 hover:bg-slate-900 text-white font-bold rounded-lg text-xs shadow transition disabled:opacity-50"
             >
