@@ -23,7 +23,17 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const message = error.response?.data?.message || error.message || 'An unexpected error occurred';
+    let message = error.response?.data?.message || error.message || 'An unexpected error occurred';
+    if (typeof message === 'string' && (message.startsWith('{') || message.startsWith('['))) {
+      try {
+        const parsed = JSON.parse(message);
+        if (Array.isArray(parsed) && parsed[0]?.message) {
+          message = parsed.map((p: any) => p.message).join(', ');
+        } else if (parsed?.message) {
+          message = parsed.message;
+        }
+      } catch {}
+    }
     return Promise.reject(new Error(message));
   }
 );

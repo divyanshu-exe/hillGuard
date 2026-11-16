@@ -4,17 +4,30 @@ const validate = (schema) => (req, res, next) => {
     req.body = parsed;
     next();
   } catch (err) {
-    if (err.errors) {
-      const messages = err.errors.map(e => `${e.path.join('.')}: ${e.message}`);
+    const issues = err.issues || err.errors;
+    if (issues && Array.isArray(issues) && issues.length > 0) {
+      const messages = issues.map((e) => {
+        const field = e.path && e.path.length > 0 ? `${e.path.join('.')}: ` : '';
+        return `${field}${e.message || 'Invalid input'}`;
+      });
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
+        message: messages.join(', '),
         errors: messages
       });
     }
+
+    let cleanMsg = err.message || 'Validation failed';
+    try {
+      const parsedIssues = JSON.parse(cleanMsg);
+      if (Array.isArray(parsedIssues) && parsedIssues.length > 0) {
+        cleanMsg = parsedIssues.map((i) => i.message || 'Invalid input').join(', ');
+      }
+    } catch {}
+
     return res.status(400).json({
       success: false,
-      message: err.message
+      message: cleanMsg
     });
   }
 };

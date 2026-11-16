@@ -229,8 +229,8 @@ export const CitizenReportModal: React.FC<CitizenReportModalProps> = ({
       return;
     }
 
-    if (!description.trim()) {
-      toast.error('Please provide a brief description of the blockage or landslide.');
+    if (!description.trim() || description.trim().length < 5) {
+      toast.error('Please enter a brief description (at least 5 characters).', { id: 'report-validation' });
       return;
     }
 
@@ -553,11 +553,13 @@ export const CitizenReportModal: React.FC<CitizenReportModalProps> = ({
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1">
                 Incident Description & Severity <span className="text-red-500">*</span>
+                <span className="text-[10px] text-slate-400 font-normal ml-1.5">(min 5 characters)</span>
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
+                minLength={5}
                 placeholder="e.g. Boulders and mud have blocked both lanes 2km past Ganga Lake cutoff. Stranded vehicles present."
                 className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
                 required
