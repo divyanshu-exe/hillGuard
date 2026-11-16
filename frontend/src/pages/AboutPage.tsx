@@ -1,19 +1,22 @@
 import React from 'react';
 import { Mountain, GraduationCap, ShieldCheck, Target, Award, Users, BookOpen } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const AboutPage: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
       {/* Header */}
       <div className="text-center space-y-3">
         <span className="text-xs font-bold text-[#16A36A] uppercase tracking-widest">
-          Academic Minor Project
+          {t('about.tag')}
         </span>
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
-          About Project HillGuard
+          {t('about.title')}
         </h1>
         <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto">
-          Real-Time Landslide Detection & Road-Blockage Alert System designed for the vulnerable highway corridors of Arunachal Pradesh.
+          {t('about.desc')}
         </p>
       </div>
 
@@ -21,16 +24,16 @@ export const AboutPage: React.FC = () => {
       <div className="bg-gradient-to-r from-[#123B2A] to-[#1c553d] text-white p-6 sm:p-8 rounded-3xl border border-[#256e50] shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-2 text-center md:text-left">
           <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider block">
-            Institutional Affiliation
+            {t('about.instAffil')}
           </span>
           <h2 className="text-2xl font-black text-white">
-            National Institute of Technology Arunachal Pradesh
+            {t('about.instName')}
           </h2>
           <p className="text-xs text-slate-300">
-            Department of Computer Science and Engineering • B.Tech 3rd Year Minor Project
+            {t('about.instDept')}
           </p>
           <p className="text-xs text-emerald-200 pt-1">
-            Project Supervisor & Guide: <strong className="text-white">Dr. Koj Sambyo</strong>
+            {t('about.supervisor')}
           </p>
         </div>
 
@@ -43,7 +46,7 @@ export const AboutPage: React.FC = () => {
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
         <h3 className="font-extrabold text-slate-900 text-lg flex items-center gap-2">
           <Users className="w-5 h-5 text-emerald-600" />
-          Student Development Team
+          {t('about.teamTitle')}
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

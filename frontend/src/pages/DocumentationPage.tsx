@@ -11,8 +11,10 @@ import {
   Radio,
   ExternalLink
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const DocumentationPage: React.FC = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'architecture' | 'api' | 'database' | 'hardware' | 'formula'>('architecture');
 
   return (
@@ -20,16 +22,16 @@ export const DocumentationPage: React.FC = () => {
       {/* Title */}
       <div>
         <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
-          <span>HillGuard System</span>
+          <span>{t('docs.system')}</span>
           <span>•</span>
-          <span className="text-emerald-700 font-bold">Technical Specifications</span>
+          <span className="text-emerald-700 font-bold">{t('docs.specs')}</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
           <FileText className="w-8 h-8 text-emerald-600" />
-          HillGuard Technical & Architecture Documentation
+          {t('docs.title')}
         </h1>
-        <p className="text-xs sm:text-sm text-slate-600">
-          Full-stack specifications for academic viva evaluation, technical defense, and Phase 2 physical hardware deployment.
+        <p className="text-xs sm:text-sm text-slate-600 mt-1">
+          {t('docs.subtitle')}
         </p>
       </div>
 
@@ -37,43 +39,43 @@ export const DocumentationPage: React.FC = () => {
       <div className="flex flex-wrap gap-2 border-b pb-3 text-xs sm:text-sm">
         <button
           onClick={() => setActiveTab('architecture')}
-          className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 cursor-pointer ${
             activeTab === 'architecture' ? 'bg-[#123B2A] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100'
           }`}
         >
-          <Layers className="w-4 h-4" /> System Architecture
+          <Layers className="w-4 h-4" /> {t('docs.tabArchitecture')}
         </button>
         <button
           onClick={() => setActiveTab('formula')}
-          className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 cursor-pointer ${
             activeTab === 'formula' ? 'bg-[#123B2A] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100'
           }`}
         >
-          <Code2 className="w-4 h-4" /> Risk Engine Algorithm
+          <Code2 className="w-4 h-4" /> {t('docs.tabFormula')}
         </button>
         <button
           onClick={() => setActiveTab('api')}
-          className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 cursor-pointer ${
             activeTab === 'api' ? 'bg-[#123B2A] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100'
           }`}
         >
-          <Server className="w-4 h-4" /> REST APIs & Sockets
+          <Server className="w-4 h-4" /> {t('docs.tabApi')}
         </button>
         <button
           onClick={() => setActiveTab('database')}
-          className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 cursor-pointer ${
             activeTab === 'database' ? 'bg-[#123B2A] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100'
           }`}
         >
-          <Database className="w-4 h-4" /> Database Models
+          <Database className="w-4 h-4" /> {t('docs.tabDatabase')}
         </button>
         <button
           onClick={() => setActiveTab('hardware')}
-          className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 cursor-pointer ${
             activeTab === 'hardware' ? 'bg-[#123B2A] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100'
           }`}
         >
-          <Cpu className="w-4 h-4" /> Phase 2 Hardware Guide
+          <Cpu className="w-4 h-4" /> {t('docs.tabHardware')}
         </button>
       </div>
 
@@ -82,29 +84,29 @@ export const DocumentationPage: React.FC = () => {
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Layers className="w-6 h-6 text-emerald-600" />
-            End-to-End System Architecture
+            {t('docs.archTitle')}
           </h2>
           <p>
-            HillGuard follows a modular, decoupled tier design ensuring continuous operation during Himalayan weather extremes and network outages.
+            {t('docs.archDesc')}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
             <div className="p-4 rounded-2xl bg-slate-50 border space-y-2">
-              <strong className="text-emerald-700 block text-sm">1. Edge & Telemetry Layer</strong>
+              <strong className="text-emerald-700 block text-sm">{t('docs.layer1Title')}</strong>
               <p className="text-slate-600">
-                Phase 1 employs a multi-threaded Hardware Simulator module. In Phase 2, ESP32 nodes sample capacitive soil moisture, MPU6050 angle, and rain intensity every 5–15 seconds, transmitting JSON over HTTP/GSM.
+                {t('docs.layer1Desc')}
               </p>
             </div>
             <div className="p-4 rounded-2xl bg-slate-50 border space-y-2">
-              <strong className="text-emerald-700 block text-sm">2. Compute & Risk Assessment Tier</strong>
+              <strong className="text-emerald-700 block text-sm">{t('docs.layer2Title')}</strong>
               <p className="text-slate-600">
-                Node.js + Express backend hosting the rule-based Intelligent Risk Assessment Engine. Evaluates formula weights, detects sudden angular slope shifts, and persists time-series telemetry in MongoDB.
+                {t('docs.layer2Desc')}
               </p>
             </div>
             <div className="p-4 rounded-2xl bg-slate-50 border space-y-2">
-              <strong className="text-emerald-700 block text-sm">3. PWA Client & Presentation Tier</strong>
+              <strong className="text-emerald-700 block text-sm">{t('docs.layer3Title')}</strong>
               <p className="text-slate-600">
-                React 19, TypeScript, Leaflet.js, and Recharts. Progressive Web App (PWA) with Service Worker and IndexedDB for zero-network offline highway guidance and background report synchronization.
+                {t('docs.layer3Desc')}
               </p>
             </div>
           </div>
@@ -127,7 +129,7 @@ export const DocumentationPage: React.FC = () => {
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Code2 className="w-6 h-6 text-emerald-600" />
-            Geotechnical Risk Formula & Normalization
+            {t('docs.formulaTitle')}
           </h2>
 
           <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl">
@@ -136,12 +138,12 @@ export const DocumentationPage: React.FC = () => {
               R = (0.35 × S) + (0.30 × T) + (0.25 × W) + (0.10 × V)
             </div>
             <p className="text-xs text-emerald-700">
-              Where all normalized indices S, T, W, V range between 0 and 100.
+              {t('docs.formulaDesc')}
             </p>
           </div>
 
           <div className="space-y-3">
-            <h3 className="font-bold text-slate-800 text-sm">Autonomous Event Triggers</h3>
+            <h3 className="font-bold text-slate-800 text-sm">{t('docs.triggersTitle')}</h3>
             <ul className="space-y-2 list-disc list-inside text-xs">
               <li>
                 <strong>Sudden Slope Tilt Movement Trigger:</strong> If tilt angle increases by &gt;=5° between consecutive sampling cycles, or total tilt exceeds 15°, the system triggers an emergency override forcing R &gt;= 75 (RED Alert).
@@ -162,7 +164,7 @@ export const DocumentationPage: React.FC = () => {
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 text-xs sm:text-sm">
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Server className="w-6 h-6 text-emerald-600" />
-            REST API Endpoints Reference
+            {t('docs.apiTitle')}
           </h2>
 
           <div className="overflow-x-auto">
@@ -229,7 +231,7 @@ export const DocumentationPage: React.FC = () => {
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 text-xs sm:text-sm">
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Database className="w-6 h-6 text-emerald-600" />
-            MongoDB Schema Collections
+            {t('docs.dbTitle')}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -278,7 +280,7 @@ export const DocumentationPage: React.FC = () => {
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <Cpu className="w-6 h-6 text-emerald-600" />
-            Phase 2 Physical ESP32 Hardware Integration Guide
+            {t('docs.hwTitle')}
           </h2>
           <p>
             When transitioning from Phase 1 to Phase 2, connect actual microcontrollers using the provided sketch in <code className="text-emerald-700 font-mono">hardware/esp32_firmware/hillguard_esp32_node.ino</code>.

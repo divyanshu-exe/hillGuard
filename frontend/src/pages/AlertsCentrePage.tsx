@@ -17,11 +17,13 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useSocketContext } from '../context/SocketContext';
 import { StatusBadge } from '../components/common/StatusBadge';
+import { useLanguage } from '../context/LanguageContext';
 import { Alert, AlertCategory } from '../types';
 
 export const AlertsCentrePage: React.FC = () => {
   const { isOfficialOrAdmin } = useAuth();
   const { socket } = useSocketContext();
+  const { t } = useLanguage();
 
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [filterCategory, setFilterCategory] = useState<string>('ALL');
@@ -105,10 +107,10 @@ export const AlertsCentrePage: React.FC = () => {
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             <AlertTriangle className="w-7 h-7 text-amber-500" />
-            Alerts & Emergency Notification Centre
+            {t('alerts.title')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-600">
-            Real-time geotechnical warnings, road blockages, and highway closures across Arunachal Pradesh.
+            {t('alerts.subtitle')}
           </p>
         </div>
 

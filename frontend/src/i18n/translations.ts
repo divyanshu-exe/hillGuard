@@ -150,7 +150,68 @@ export const translations: Record<LanguageCode, Record<string, string>> = {
     'footer.guide': 'Project Guide:',
     'footer.developers': 'Project Developers',
     'footer.quickLinks': 'Quick Navigation',
-    'footer.rights': 'HillGuard Intelligent Landslide Early Warning System. Developed for academic evaluation at NIT Arunachal Pradesh.'
+    'footer.rights': 'HillGuard Intelligent Landslide Early Warning System. Developed for academic evaluation at NIT Arunachal Pradesh.',
+
+    // Docs Page
+    'docs.system': 'HillGuard System',
+    'docs.specs': 'Technical Specifications',
+    'docs.title': 'HillGuard Technical & Architecture Documentation',
+    'docs.subtitle': 'Full-stack specifications for academic viva evaluation, technical defense, and Phase 2 physical hardware deployment.',
+    'docs.tabArchitecture': 'System Architecture',
+    'docs.tabFormula': 'Risk Engine Algorithm',
+    'docs.tabApi': 'REST APIs & Sockets',
+    'docs.tabDatabase': 'Database Models',
+    'docs.tabHardware': 'Phase 2 Hardware Guide',
+    'docs.archTitle': 'End-to-End System Architecture',
+    'docs.archDesc': 'HillGuard follows a modular, decoupled tier design ensuring continuous operation during Himalayan weather extremes and network outages.',
+    'docs.layer1Title': '1. Edge & Telemetry Layer',
+    'docs.layer1Desc': 'Phase 1 employs a multi-threaded Hardware Simulator module. In Phase 2, ESP32 nodes sample capacitive soil moisture, MPU6050 angle, and rain intensity every 5–15 seconds, transmitting JSON over HTTP/GSM.',
+    'docs.layer2Title': '2. Compute & Risk Assessment Tier',
+    'docs.layer2Desc': 'Node.js + Express backend hosting the rule-based Intelligent Risk Assessment Engine. Evaluates formula weights, detects sudden angular slope shifts, and persists time-series telemetry in MongoDB.',
+    'docs.layer3Title': '3. PWA Client & Presentation Tier',
+    'docs.layer3Desc': 'React 19, TypeScript, Leaflet.js, and Recharts. Progressive Web App (PWA) with Service Worker and IndexedDB for zero-network offline highway guidance and background report synchronization.',
+    'docs.formulaTitle': 'Geotechnical Risk Formula & Normalization',
+    'docs.formulaDesc': 'Where all normalized indices S, T, W, V range between 0 and 100.',
+    'docs.triggersTitle': 'Autonomous Event Triggers',
+    'docs.apiTitle': 'REST API Endpoints Reference',
+    'docs.dbTitle': 'MongoDB Schema Collections',
+    'docs.hwTitle': 'Phase 2 Physical ESP32 Hardware Integration Guide',
+
+    // About Page
+    'about.tag': 'Academic Minor Project',
+    'about.title': 'About Project HillGuard',
+    'about.desc': 'Real-Time Landslide Detection & Road-Blockage Alert System designed for the vulnerable highway corridors of Arunachal Pradesh.',
+    'about.instAffil': 'Institutional Affiliation',
+    'about.instName': 'National Institute of Technology Arunachal Pradesh',
+    'about.instDept': 'Department of Computer Science and Engineering • B.Tech 3rd Year Minor Project',
+    'about.supervisor': 'Project Supervisor & Guide: Dr. Koj Sambyo',
+    'about.teamTitle': 'Student Development Team',
+
+    // Traveller Dashboard
+    'traveller.portal': 'Traveller Highway Safety Portal',
+    'traveller.title': 'Arunachal Commuter Dashboard',
+    'traveller.subtitle': 'Live highway passability conditions, active landslide alerts, and verified incident reports across Papum Pare, West Kameng, Tawang, and Siang valley.',
+    'traveller.reportBtn': 'Report Road Blockage',
+    'traveller.totalMonitored': 'Total Monitored',
+    'traveller.safe': 'Clear & Safe',
+    'traveller.warning': 'Landslide Warning',
+    'traveller.critical': 'Critical Risk',
+    'traveller.blocked': 'Roads Blocked',
+    'traveller.activeAdvisories': 'Active Landslide Warnings & Highway Advisories',
+    'traveller.weather': 'Regional Weather',
+    'traveller.mapTitle': 'Live Arunachal Pradesh Highway Risk Map',
+    'traveller.recentReports': 'Recent Verified Citizen Ground Reports',
+
+    // Alerts Page
+    'alerts.title': 'Highway Alerts & Road Closures Centre',
+    'alerts.subtitle': 'Real-time landslide warnings, rockfall incidents, and official road passability status for Arunachal Pradesh.',
+    'alerts.active': 'Active Alerts',
+    'alerts.all': 'All Alerts',
+    'alerts.resolved': 'Resolved',
+
+    // Live Monitoring Page
+    'liveMap.title': 'Geospatial Live Highway Monitoring',
+    'liveMap.subtitle': 'Real-time telemetry, soil moisture, and tilt tracking across Arunachal mountain passes.'
   },
 
   hi: {
@@ -261,7 +322,68 @@ export const translations: Record<LanguageCode, Record<string, string>> = {
     'footer.guide': 'प्रोजेक्ट मार्गदर्शक:',
     'footer.developers': 'प्रोजेक्ट डेवलपर्स',
     'footer.quickLinks': 'त्वरित लिंक',
-    'footer.rights': 'हिलगार्ड इंटेलिजेंट लैंडस्लाइड अर्ली वार्निंग सिस्टम। एनआईटी अरुणाचल प्रदेश में शैक्षणिक मूल्यांकन हेतु विकसित।'
+    'footer.rights': 'हिलगार्ड इंटेलिजेंट लैंडस्लाइड अर्ली वार्निंग सिस्टम। एनआईटी अरुणाचल प्रदेश में शैक्षणिक मूल्यांकन हेतु विकसित।',
+
+    // Docs Page
+    'docs.system': 'हिलगार्ड सिस्टम',
+    'docs.specs': 'तकनीकी विनिर्देश',
+    'docs.title': 'हिलगार्ड तकनीकी एवं आर्किटेक्चर दस्तावेज़',
+    'docs.subtitle': 'शैक्षणिक मौखिक परीक्षा (Viva), तकनीकी प्रस्तुति एवं फेज़ 2 भौतिक हार्डवेयर तैनाती हेतु संपूर्ण तकनीकी विनिर्देश।',
+    'docs.tabArchitecture': 'सिस्टम आर्किटेक्चर',
+    'docs.tabFormula': 'जोखिम गणना एल्गोरिदम',
+    'docs.tabApi': 'REST APIs एवं सॉकेट्स',
+    'docs.tabDatabase': 'डेटाबेस मॉडल्स',
+    'docs.tabHardware': 'फेज़ 2 हार्डवेयर गाइड',
+    'docs.archTitle': 'एंड-टू-एंड सिस्टम आर्किटेक्चर',
+    'docs.archDesc': 'हिलगार्ड हिमालयी मौसम की विषम परिस्थितियों और नेटवर्क विफलता के दौरान भी निरंतर संचालन हेतु मॉड्युलर व डीकपल्ड टियर डिज़ाइन का पालन करता है।',
+    'docs.layer1Title': '1. एज एवं टेलीमेट्री लेयर',
+    'docs.layer1Desc': 'फेज़ 1 में मल्टी-थ्रेडेड हार्डवेयर सिम्युलेटर मॉड्यूल का उपयोग होता है। फेज़ 2 में ESP32 नोड्स मिट्टी की नमी, MPU6050 कोण और वर्षा तीव्रता को मापकर HTTP/GSM पर JSON भेजते हैं।',
+    'docs.layer2Title': '2. गणना एवं जोखिम मूल्यांकन टियर',
+    'docs.layer2Desc': 'Node.js + Express बैकएंड नियम-आधारित बुद्धिमान जोखिम मूल्यांकन इंजन संचालित करता है। यह फॉर्मूला भार का आकलन करता है और समय-श्रृंखला डेटा को सुरक्षित रखता है।',
+    'docs.layer3Title': '3. PWA क्लाइंट एवं प्रेजेंटेशन टियर',
+    'docs.layer3Desc': 'React 19, TypeScript, Leaflet.js और Recharts। शून्य-नेटवर्क ऑफ़लाइन राजमार्ग मार्गदर्शन और बैकग्राउंड रिपोर्ट सिंक्रनाइज़ेशन हेतु PWA व IndexedDB।',
+    'docs.formulaTitle': 'भू-तकनीकी जोखिम फॉर्मूला एवं सामान्यीकरण',
+    'docs.formulaDesc': 'जहाँ सभी सामान्यीकृत सूचकांक S, T, W, V का मान 0 से 100 के बीच होता है।',
+    'docs.triggersTitle': 'स्वायत्त आपातकालीन ट्रिगर्स',
+    'docs.apiTitle': 'REST API एंडपॉइंट्स संदर्भ',
+    'docs.dbTitle': 'MongoDB स्कीमा संग्रह (Collections)',
+    'docs.hwTitle': 'फेज़ 2 भौतिक ESP32 हार्डवेयर एकीकरण गाइड',
+
+    // About Page
+    'about.tag': 'शैक्षणिक माइनर प्रोजेक्ट',
+    'about.title': 'प्रोजेक्ट हिलगार्ड के बारे में',
+    'about.desc': 'अरुणाचल प्रदेश के संवेदनशील पहाड़ी राजमार्गों हेतु निर्मित रियल-टाइम भूस्खलन पहचान एवं सड़क अवरोध चेतावनी प्रणाली।',
+    'about.instAffil': 'संस्थागत संबद्धता',
+    'about.instName': 'राष्ट्रीय प्रौद्योगिकी संस्थान (NIT) अरुणाचल प्रदेश',
+    'about.instDept': 'कंप्यूटर साइंस एंड इंजीनियरिंग विभाग • बी.टेक तृतीय वर्ष माइनर प्रोजेक्ट',
+    'about.supervisor': 'परियोजना पर्यवेक्षक एवं मार्गदर्शक: डॉ. कोज सामब्यो',
+    'about.teamTitle': 'छात्र विकास दल',
+
+    // Traveller Dashboard
+    'traveller.portal': 'यात्री राजमार्ग सुरक्षा पोर्टल',
+    'traveller.title': 'अरुणाचल कम्यूटर डैशबोर्ड',
+    'traveller.subtitle': 'पापुम पारे, पश्चिम कामेंग, तवांग और सियांग घाटी में राजमार्ग पास होने की लाइव स्थिति, सक्रिय भूस्खलन अलर्ट और पुष्ट रिपोर्ट।',
+    'traveller.reportBtn': 'सड़क रुकावट रिपोर्ट करें',
+    'traveller.totalMonitored': 'कुल निगरानी वाले',
+    'traveller.safe': 'स्पष्ट व सुरक्षित',
+    'traveller.warning': 'भूस्खलन चेतावनी',
+    'traveller.critical': 'गंभीर जोखिम',
+    'traveller.blocked': 'रास्ता बंद',
+    'traveller.activeAdvisories': 'सक्रिय भूस्खलन चेतावनियाँ एवं राजमार्ग परामर्श',
+    'traveller.weather': 'क्षेत्रीय मौसम स्थिति',
+    'traveller.mapTitle': 'इंटरैक्टिव अरुणाचल प्रदेश राजमार्ग जोखिम मानचित्र',
+    'traveller.recentReports': 'नागरिकों द्वारा हाल ही में दर्ज पुष्ट रिपोर्ट',
+
+    // Alerts Page
+    'alerts.title': 'राजमार्ग अलर्ट एवं सड़क बंदी केंद्र',
+    'alerts.subtitle': 'अरुणाचल प्रदेश के लिए रियल-टाइम भूस्खलन चेतावनी, चट्टान गिरने की घटनाएं और आधिकारिक मार्ग स्थिति।',
+    'alerts.active': 'सक्रिय अलर्ट',
+    'alerts.all': 'सभी अलर्ट',
+    'alerts.resolved': 'सुलझाए गए',
+
+    // Live Monitoring Page
+    'liveMap.title': 'भू-स्थानिक लाइव राजमार्ग निगरानी',
+    'liveMap.subtitle': 'अरुणाचल के पहाड़ी दर्रों पर रियल-टाइम टेलीमेट्री, मिट्टी की नमी और ढलान झुकाव ट्रैकिंग।'
   },
 
   as: {

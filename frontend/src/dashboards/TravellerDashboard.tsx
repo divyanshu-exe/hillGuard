@@ -19,12 +19,14 @@ import { StatusBadge } from '../components/common/StatusBadge';
 import { RoadRiskMap } from '../components/map/RoadRiskMap';
 import { RoadDetailsModal } from '../components/map/RoadDetailsModal';
 import { Road, Alert, Report, WeatherData } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface TravellerDashboardProps {
   onOpenReportModal: () => void;
 }
 
 export const TravellerDashboard: React.FC<TravellerDashboardProps> = ({ onOpenReportModal }) => {
+  const { t } = useLanguage();
   const [dashboardData, setDashboardData] = useState<{
     summary?: any;
     highRiskRoads?: Road[];
@@ -78,54 +80,54 @@ export const TravellerDashboard: React.FC<TravellerDashboardProps> = ({ onOpenRe
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 radar-pulse-green" />
             <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">
-              Traveller Highway Safety Portal
+              {t('traveller.portal')}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white">
-            Arunachal Commuter Dashboard
+            {t('traveller.title')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-200 mt-1 max-w-2xl leading-relaxed">
-            Live highway passability conditions, active landslide alerts, and verified incident reports across Papum Pare, West Kameng, Tawang, and Siang valley.
+            {t('traveller.subtitle')}
           </p>
         </div>
 
         <button
           onClick={onOpenReportModal}
-          className="px-5 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-lg transition transform active:scale-95 shrink-0"
+          className="px-5 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-lg transition transform active:scale-95 shrink-0 cursor-pointer"
         >
           <Camera className="w-4 h-4" />
-          Report Road Blockage
+          {t('traveller.reportBtn')}
         </button>
       </div>
 
       {/* Overview Status Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-xs">
         <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-xs">
-          <span className="text-slate-400 block text-[10px] font-semibold uppercase">Total Monitored</span>
+          <span className="text-slate-400 block text-[10px] font-semibold uppercase">{t('traveller.totalMonitored')}</span>
           <span className="text-2xl font-black text-slate-900 mt-1 block">{summary.totalRoads}</span>
           <span className="text-[10px] text-slate-500">Key mountain passes</span>
         </div>
 
         <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 shadow-xs">
-          <span className="text-emerald-700 block text-[10px] font-semibold uppercase">Clear & Safe</span>
+          <span className="text-emerald-700 block text-[10px] font-semibold uppercase">{t('traveller.safe')}</span>
           <span className="text-2xl font-black text-emerald-700 mt-1 block">{summary.safeRoads}</span>
           <span className="text-[10px] text-emerald-600">Green status</span>
         </div>
 
         <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 shadow-xs">
-          <span className="text-amber-700 block text-[10px] font-semibold uppercase">Landslide Warning</span>
+          <span className="text-amber-700 block text-[10px] font-semibold uppercase">{t('traveller.warning')}</span>
           <span className="text-2xl font-black text-amber-600 mt-1 block">{summary.warningRoads}</span>
           <span className="text-[10px] text-amber-600">Caution advised</span>
         </div>
 
         <div className="p-4 bg-red-50 rounded-2xl border border-red-200 shadow-xs">
-          <span className="text-red-700 block text-[10px] font-semibold uppercase">Critical Risk</span>
+          <span className="text-red-700 block text-[10px] font-semibold uppercase">{t('traveller.critical')}</span>
           <span className="text-2xl font-black text-red-600 mt-1 block">{summary.criticalRoads}</span>
           <span className="text-[10px] text-red-600">Slope collapse alert</span>
         </div>
 
         <div className="p-4 bg-red-900 text-white rounded-2xl shadow-xs col-span-2 sm:col-span-1">
-          <span className="text-red-200 block text-[10px] font-semibold uppercase">Roads Blocked</span>
+          <span className="text-red-200 block text-[10px] font-semibold uppercase">{t('traveller.blocked')}</span>
           <span className="text-2xl font-black text-white mt-1 block">{summary.blockedRoads}</span>
           <span className="text-[10px] text-red-200">BRO clearing underway</span>
         </div>
@@ -138,7 +140,7 @@ export const TravellerDashboard: React.FC<TravellerDashboardProps> = ({ onOpenRe
           <div className="flex items-center justify-between border-b pb-3">
             <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-red-600" />
-              Active Landslide Warnings & Highway Advisories
+              {t('traveller.activeAdvisories')}
             </h3>
             <span className="text-xs bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded-full">
               {activeAlerts.length} Active
@@ -190,7 +192,7 @@ export const TravellerDashboard: React.FC<TravellerDashboardProps> = ({ onOpenRe
           <div className="flex items-center justify-between border-b pb-2">
             <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
               <CloudRain className="w-4 h-4 text-sky-600" />
-              Regional Weather
+              {t('traveller.weather')}
             </h3>
             <span className="text-[10px] text-slate-400">Itanagar Capital</span>
           </div>
@@ -234,7 +236,7 @@ export const TravellerDashboard: React.FC<TravellerDashboardProps> = ({ onOpenRe
         <div className="flex items-center justify-between">
           <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
             <Activity className="w-5 h-5 text-emerald-600" />
-            Live Arunachal Pradesh Highway Risk Map
+            {t('traveller.mapTitle')}
           </h3>
           <span className="text-xs text-slate-500">Click any highway or marker for full telemetry breakdown</span>
         </div>
@@ -252,7 +254,7 @@ export const TravellerDashboard: React.FC<TravellerDashboardProps> = ({ onOpenRe
         <h3 className="font-bold text-slate-900 text-sm flex items-center justify-between">
           <span className="flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-emerald-600" />
-            Recent Verified Citizen Ground Reports
+            {t('traveller.recentReports')}
           </span>
           <span className="text-xs text-slate-500 font-normal">BRO Ground Truthed</span>
         </h3>

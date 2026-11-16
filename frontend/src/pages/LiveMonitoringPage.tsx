@@ -21,6 +21,7 @@ import { StatusBadge } from '../components/common/StatusBadge';
 import { RoadDetailsModal } from '../components/map/RoadDetailsModal';
 import { cacheRoads, getCachedRoads } from '../services/offlineDb';
 import { useOffline } from '../context/OfflineContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Road, WeatherData } from '../types';
 
 interface LiveMonitoringPageProps {
@@ -29,6 +30,7 @@ interface LiveMonitoringPageProps {
 
 export const LiveMonitoringPage: React.FC<LiveMonitoringPageProps> = ({ onOpenReportModal }) => {
   const { isOnline, setCachedTimestamp } = useOffline();
+  const { t } = useLanguage();
 
   const [roads, setRoads] = useState<Road[]>([]);
   const [selectedRoad, setSelectedRoad] = useState<Road | null>(null);
@@ -115,20 +117,20 @@ export const LiveMonitoringPage: React.FC<LiveMonitoringPageProps> = ({ onOpenRe
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             <Compass className="w-7 h-7 text-emerald-600" />
-            Live Arunachal Road Monitoring Grid
+            {t('liveMap.title')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-600">
-            Real-time environmental telemetry, geotechnical risk indices, and verified passability conditions.
+            {t('liveMap.subtitle')}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={onOpenReportModal}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow transition"
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow transition cursor-pointer"
           >
             <Camera className="w-4 h-4" />
-            Report Road Blockage
+            {t('nav.reportBlockage')}
           </button>
         </div>
       </div>
