@@ -19,8 +19,11 @@ import { useAuth } from '../context/AuthContext';
 
 // Helper wrapper to pass modal opener down to pages
 const LandingPageWrapper: React.FC = () => {
-  const { onOpenReportModal } = useOutletContext<{ onOpenReportModal: () => void }>();
-  return <LandingPage onOpenReportModal={onOpenReportModal} />;
+  const { onOpenReportModal, onOpenSos } = useOutletContext<{
+    onOpenReportModal: () => void;
+    onOpenSos?: () => void;
+  }>();
+  return <LandingPage onOpenReportModal={onOpenReportModal} onOpenSos={onOpenSos} />;
 };
 
 const LiveMonitoringWrapper: React.FC = () => {

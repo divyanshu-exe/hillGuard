@@ -18,18 +18,23 @@ import {
   FileText,
   Clock,
   Wifi,
-  ExternalLink
+  ExternalLink,
+  AlertOctagon
 } from 'lucide-react';
 import api from '../services/api';
 import { RoadRiskMap } from '../components/map/RoadRiskMap';
 import { RoadDetailsModal } from '../components/map/RoadDetailsModal';
+import { useLanguage } from '../context/LanguageContext';
+import { VoiceStatusAnnouncement } from '../components/common/VoiceStatusAnnouncement';
 import { Road } from '../types';
 
 interface LandingPageProps {
   onOpenReportModal: () => void;
+  onOpenSos?: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onOpenReportModal }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onOpenReportModal, onOpenSos }) => {
+  const { t } = useLanguage();
   const [roads, setRoads] = useState<Road[]>([]);
   const [stats, setStats] = useState({
     monitoredSections: 5,
@@ -63,128 +68,147 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenReportModal }) =
 
   return (
     <div className="space-y-16 pb-12">
-      {/* 1. Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#123B2A] via-[#164330] to-[#123B2A] text-white pt-16 pb-24 px-4 sm:px-6 lg:px-8 border-b border-[#1d523b]">
-        {/* Subtle Mountain Topographic Vector Pattern */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#16A36A_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+      {/* 1. Hero Section - Light, Modern & Professional */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-emerald-50/20 to-white text-slate-900 pt-14 pb-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200/80">
+        {/* Subtle grid pattern & ambient lighting */}
+        <div className="absolute inset-0 opacity-[0.35] bg-[radial-gradient(#059669_0.8px,transparent_0.8px)] [background-size:24px_24px] pointer-events-none" />
+        <div className="absolute -top-24 right-1/4 w-96 h-96 bg-emerald-200/25 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-4 w-72 h-72 bg-teal-100/30 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
-          {/* Pilot Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 text-xs font-semibold mb-6 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 radar-pulse-green" />
-            <span>Arunachal Pradesh Disaster Management Intelligence • B.Tech Minor Project</span>
+          {/* Pilot Badge & Voice Road Safety Bulletin */}
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-600 radar-pulse-green" />
+              <span>{t('hero.badge')}</span>
+            </div>
+
+            {/* Voice Audio Announcement Component */}
+            <VoiceStatusAnnouncement />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left 7 Cols */}
             <div className="lg:col-span-7 space-y-6">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight font-sans">
-                Know the Road <br />
-                <span className="text-[#16A36A]">Before You Go.</span>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight font-sans text-slate-900">
+                {t('hero.titleLine1')} <br />
+                <span className="bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent">
+                  {t('hero.titleLine2')}
+                </span>
               </h1>
 
-              <p className="text-base sm:text-lg text-slate-200 leading-relaxed max-w-2xl font-normal">
-                Real-time landslide monitoring, intelligent road-risk analysis, and verified road-blockage alerts for safer journeys across the hills of Arunachal Pradesh.
+              <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl font-normal">
+                {t('hero.description')}
               </p>
 
               {/* CTAs */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
+              <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Link
                   to="/live-monitoring"
-                  className="px-6 py-3.5 rounded-xl bg-[#16A36A] hover:bg-emerald-600 text-white font-bold text-sm sm:text-base shadow-lg shadow-emerald-950/40 flex items-center gap-2 transition transform active:scale-95"
+                  className="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm shadow-emerald-600/30 flex items-center gap-2 transition hover:-translate-y-0.5 active:translate-y-0"
                 >
-                  <Activity className="w-5 h-5" />
-                  Explore Live Map
+                  <Activity className="w-4 h-4" />
+                  {t('hero.ctaExplore')}
                 </Link>
 
                 <button
                   onClick={onOpenReportModal}
-                  className="px-6 py-3.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-red-950/40 flex items-center gap-2 transition transform active:scale-95"
+                  className="px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-sm shadow-rose-600/30 flex items-center gap-2 transition hover:-translate-y-0.5 active:translate-y-0"
                 >
-                  <Camera className="w-5 h-5" />
-                  Report Road Blockage
+                  <Camera className="w-4 h-4" />
+                  {t('hero.ctaReport')}
+                </button>
+
+                {/* Emergency SOS & Helpline Trigger */}
+                <button
+                  onClick={onOpenSos}
+                  className="px-4 py-3 rounded-xl bg-red-700 hover:bg-red-800 text-white font-extrabold text-sm shadow-sm shadow-red-700/30 flex items-center gap-2 transition hover:-translate-y-0.5 active:translate-y-0 animate-pulse border border-red-500/50"
+                  title="Open 24x7 Emergency Helplines (1070 / 112)"
+                >
+                  <AlertOctagon className="w-4 h-4 text-white" />
+                  <span>SOS 1070 / 112</span>
                 </button>
 
                 <Link
                   to="/simulator"
-                  className="px-5 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-emerald-300 border border-emerald-500/30 text-sm font-semibold flex items-center gap-2 transition"
+                  className="px-4 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-sm font-semibold flex items-center gap-2 shadow-xs transition hover:border-slate-400"
                 >
-                  <Cpu className="w-4 h-4 text-emerald-400 animate-pulse" />
-                  Hardware Simulator
+                  <Cpu className="w-4 h-4 text-emerald-600 animate-pulse" />
+                  {t('hero.ctaSimulator')}
                 </Link>
               </div>
 
               {/* Live telemetry indicator banner */}
-              <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-emerald-200/90 border-t border-emerald-900/60">
+              <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-slate-600 border-t border-slate-200/80">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <span>Telemetry Ingestion: <strong>Active</strong></span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span>{t('hero.telemetryActive')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Radio className="w-3.5 h-3.5 text-emerald-300" />
-                  <span>Phase 1 Simulator: <strong>Running</strong></span>
+                  <Radio className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{t('hero.simulatorRunning')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Wifi className="w-3.5 h-3.5 text-sky-300" />
-                  <span>Offline PWA Ready: <strong>IndexedDB Cached</strong></span>
+                  <Wifi className="w-3.5 h-3.5 text-sky-600" />
+                  <span>{t('hero.pwaReady')}</span>
                 </div>
               </div>
             </div>
 
-            {/* Right 5 Cols: Live System Status Glassmorphic Card */}
+            {/* Right 5 Cols: Live System Status Card (Light Executive Edition) */}
             <div className="lg:col-span-5">
-              <div className="bg-[#0b271b]/90 backdrop-blur-md rounded-2xl p-6 border border-emerald-800/60 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-emerald-900">
+              <div className="bg-white/95 backdrop-blur-md rounded-2xl p-6 border border-slate-200 shadow-xl shadow-slate-200/60 space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                    <h3 className="font-bold text-white text-sm">Real-Time Highway Status</h3>
+                    <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                    <h3 className="font-bold text-slate-900 text-sm">{t('status.cardTitle')}</h3>
                   </div>
-                  <span className="text-[11px] font-mono bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800">
-                    PILOT METRICS
+                  <span className="text-[11px] font-semibold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-md border border-emerald-200">
+                    {t('status.pilotMetrics')}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-[#123B2A] rounded-xl border border-emerald-800">
-                    <span className="text-[11px] text-slate-300 block mb-1">Monitored Highways</span>
-                    <span className="text-2xl font-black text-white">{stats.monitoredSections}</span>
-                    <span className="text-[10px] text-emerald-400 block mt-0.5">Key Arunachal passes</span>
+                  <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80">
+                    <span className="text-[11px] font-medium text-slate-500 block mb-1">{t('status.monitoredHighways')}</span>
+                    <span className="text-2xl font-black text-slate-900">{stats.monitoredSections}</span>
+                    <span className="text-[10px] text-emerald-700 font-medium block mt-0.5">{t('status.monitoredSubtitle')}</span>
                   </div>
 
-                  <div className="p-3 bg-[#123B2A] rounded-xl border border-emerald-800">
-                    <span className="text-[11px] text-slate-300 block mb-1">Active IoT Nodes</span>
-                    <span className="text-2xl font-black text-emerald-400">{stats.activeNodes}</span>
-                    <span className="text-[10px] text-slate-400 block mt-0.5">ESP32 Sim Telemetry</span>
+                  <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80">
+                    <span className="text-[11px] font-medium text-slate-500 block mb-1">{t('status.activeNodes')}</span>
+                    <span className="text-2xl font-black text-emerald-600">{stats.activeNodes}</span>
+                    <span className="text-[10px] text-slate-500 block mt-0.5">{t('status.activeNodesSubtitle')}</span>
                   </div>
 
-                  <div className="p-3 bg-[#123B2A] rounded-xl border border-emerald-800">
-                    <span className="text-[11px] text-slate-300 block mb-1">Active Warnings</span>
-                    <span className="text-2xl font-black text-amber-400">{stats.activeWarnings}</span>
-                    <span className="text-[10px] text-amber-300 block mt-0.5">Pore saturation alerts</span>
+                  <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80">
+                    <span className="text-[11px] font-medium text-slate-500 block mb-1">{t('status.activeWarnings')}</span>
+                    <span className="text-2xl font-black text-amber-600">{stats.activeWarnings}</span>
+                    <span className="text-[10px] text-amber-700 block mt-0.5">{t('status.activeWarningsSubtitle')}</span>
                   </div>
 
-                  <div className="p-3 bg-[#123B2A] rounded-xl border border-emerald-800">
-                    <span className="text-[11px] text-slate-300 block mb-1">Verified Incidents</span>
-                    <span className="text-2xl font-black text-rose-400">{stats.verifiedIncidents}</span>
-                    <span className="text-[10px] text-rose-300 block mt-0.5">BRO Ground Confirmed</span>
+                  <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80">
+                    <span className="text-[11px] font-medium text-slate-500 block mb-1">{t('status.verifiedIncidents')}</span>
+                    <span className="text-2xl font-black text-rose-600">{stats.verifiedIncidents}</span>
+                    <span className="text-[10px] text-rose-700 block mt-0.5">{t('status.verifiedIncidentsSubtitle')}</span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#0d2a1d] rounded-xl border border-emerald-900 text-xs text-slate-300 flex items-center justify-between">
+                <div className="p-3.5 bg-rose-50/90 rounded-xl border border-rose-200/80 text-xs text-slate-700 flex items-center justify-between">
                   <div>
-                    <span className="font-semibold text-white block">Sela Tunnel - Tawang Route</span>
-                    <span className="text-red-400 font-bold">CRITICAL: Rockfall Blockage at Km 48</span>
+                    <span className="font-semibold text-slate-900 block">{t('status.alertRoute')}</span>
+                    <span className="text-rose-700 font-bold">{t('status.alertText')}</span>
                   </div>
                   <Link
                     to="/live-monitoring"
-                    className="text-emerald-400 hover:text-emerald-300 font-bold text-xs flex items-center gap-1"
+                    className="text-rose-700 hover:text-rose-800 font-bold text-xs flex items-center gap-1"
                   >
-                    View <ArrowRight className="w-3.5 h-3.5" />
+                    {t('status.alertView')} <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
 
                 <div className="text-[10px] text-slate-400 italic text-center">
-                  * Note: Real-time telemetry currently generated via HillGuard Hardware Simulator for evaluation.
+                  {t('status.simulatorNote')}
                 </div>
               </div>
             </div>
@@ -195,14 +219,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenReportModal }) =
       {/* 2. Live Monitoring Preview (Embedded Interactive Map) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-8 space-y-2">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-[#16A36A]">
-            Geospatial Intelligence
+          <span className="text-xs font-bold uppercase tracking-widest text-emerald-600">
+            {t('map.eyebrow')}
           </span>
           <h2 className="text-3xl font-extrabold text-slate-900">
-            Interactive Arunachal Pradesh Highway Risk Map
+            {t('map.title')}
           </h2>
           <p className="text-sm text-slate-600">
-            Click on any highway segment or monitoring node marker to inspect live soil moisture, slope tilt, and official passability.
+            {t('map.description')}
           </p>
         </div>
 
@@ -216,75 +240,75 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenReportModal }) =
 
       {/* 3. Why HillGuard Matters (Solving the Real-World Problem) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-xl">
+        <div className="bg-gradient-to-b from-white to-slate-50/80 text-slate-900 rounded-3xl p-8 sm:p-12 border border-slate-200/90 shadow-sm">
           <div className="max-w-3xl mb-10 space-y-3">
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
-              Problem Statement & Real Need
+            <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
+              {t('why.eyebrow')}
             </span>
-            <h2 className="text-3xl font-black text-white">Why HillGuard Matters in Arunachal Pradesh</h2>
-            <p className="text-sm text-slate-300 leading-relaxed">
-              Arunachal Pradesh features rugged Himalayan roads that face sudden landslides, cloudbursts, and unstable shale soil during monsoons. Existing information channels leave commuters stranded.
+            <h2 className="text-3xl font-black text-slate-900">{t('why.title')}</h2>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              {t('why.description')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-2">
-              <div className="w-10 h-10 rounded-lg bg-red-900/60 text-red-400 flex items-center justify-center font-bold">
+            <div className="p-6 rounded-2xl bg-white border border-slate-200/80 hover:border-emerald-300/80 shadow-xs hover:shadow-md transition-all space-y-2.5">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center font-bold">
                 ⚠️
               </div>
-              <h3 className="font-bold text-white text-base">Combats Fake WhatsApp Rumours</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Replaces unverified social media forwards with cryptographic official verification, time-stamped camera proofs, and live sensor truth.
+              <h3 className="font-bold text-slate-900 text-base">{t('why.f1Title')}</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {t('why.f1Desc')}
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-2">
-              <div className="w-10 h-10 rounded-lg bg-emerald-900/60 text-emerald-400 flex items-center justify-center font-bold">
+            <div className="p-6 rounded-2xl bg-white border border-slate-200/80 hover:border-emerald-300/80 shadow-xs hover:shadow-md transition-all space-y-2.5">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center font-bold">
                 📡
               </div>
-              <h3 className="font-bold text-white text-base">Works in Poor Network Zones</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Engineered with Progressive Web App (PWA) architecture and IndexedDB. Commuters view cached road conditions even when cell reception drops in deep gorges.
+              <h3 className="font-bold text-slate-900 text-base">{t('why.f2Title')}</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {t('why.f2Desc')}
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-2">
-              <div className="w-10 h-10 rounded-lg bg-sky-900/60 text-sky-400 flex items-center justify-center font-bold">
+            <div className="p-6 rounded-2xl bg-white border border-slate-200/80 hover:border-emerald-300/80 shadow-xs hover:shadow-md transition-all space-y-2.5">
+              <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-200 text-sky-600 flex items-center justify-center font-bold">
                 📷
               </div>
-              <h3 className="font-bold text-white text-base">Live Camera & GPS Verification</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Prevents fake citizen reports by requiring direct browser live camera stream capture and hardware GPS ground-truthing with accuracy metadata.
+              <h3 className="font-bold text-slate-900 text-base">{t('why.f3Title')}</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {t('why.f3Desc')}
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-2">
-              <div className="w-10 h-10 rounded-lg bg-purple-900/60 text-purple-400 flex items-center justify-center font-bold">
+            <div className="p-6 rounded-2xl bg-white border border-slate-200/80 hover:border-emerald-300/80 shadow-xs hover:shadow-md transition-all space-y-2.5">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 text-purple-600 flex items-center justify-center font-bold">
                 🧠
               </div>
-              <h3 className="font-bold text-white text-base">Intelligent Multi-Factor Risk Engine</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Evaluates soil moisture, slope tilt, vibration, and rainfall intensity through our calibrated formula: R = 0.35S + 0.30T + 0.25W + 0.10V.
+              <h3 className="font-bold text-slate-900 text-base">{t('why.f4Title')}</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {t('why.f4Desc')}
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-2">
-              <div className="w-10 h-10 rounded-lg bg-amber-900/60 text-amber-400 flex items-center justify-center font-bold">
+            <div className="p-6 rounded-2xl bg-white border border-slate-200/80 hover:border-emerald-300/80 shadow-xs hover:shadow-md transition-all space-y-2.5">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center font-bold">
                 🛡️
               </div>
-              <h3 className="font-bold text-white text-base">Distinct Risk vs Blockage Separation</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                High landslide risk indicates environmental danger, while physical blockage requires official BRO or APDMA confirmation before halting routes.
+              <h3 className="font-bold text-slate-900 text-base">{t('why.f5Title')}</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {t('why.f5Desc')}
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-2">
-              <div className="w-10 h-10 rounded-lg bg-indigo-900/60 text-indigo-400 flex items-center justify-center font-bold">
+            <div className="p-6 rounded-2xl bg-white border border-slate-200/80 hover:border-emerald-300/80 shadow-xs hover:shadow-md transition-all space-y-2.5">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center font-bold">
                 ⚡
               </div>
-              <h3 className="font-bold text-white text-base">Phase 2 Hardware Integration Ready</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Phase 1 hardware simulator uses the exact API endpoints and authentication tokens that real ESP32 microcontrollers will use in Phase 2.
+              <h3 className="font-bold text-slate-900 text-base">{t('why.f6Title')}</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {t('why.f6Desc')}
               </p>
             </div>
           </div>
@@ -294,57 +318,57 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenReportModal }) =
       {/* 4. How the System Works (Pipeline) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-2">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-[#16A36A]">
-            Architecture & Workflow
+          <span className="text-xs font-bold uppercase tracking-widest text-emerald-600">
+            {t('how.eyebrow')}
           </span>
-          <h2 className="text-3xl font-extrabold text-slate-900">How HillGuard Works</h2>
+          <h2 className="text-3xl font-extrabold text-slate-900">{t('how.title')}</h2>
           <p className="text-sm text-slate-600">
-            A seamless bridge from roadside IoT sensors to disaster authorities and traveller smartphones.
+            {t('how.description')}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative">
-            <span className="text-3xl font-black text-emerald-100 absolute top-4 right-4">01</span>
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#16A36A] flex items-center justify-center mb-4">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-slate-300 transition-all relative group">
+            <span className="text-3xl font-black text-slate-200 group-hover:text-emerald-200 transition-colors absolute top-4 right-4">01</span>
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center mb-4">
               <Cpu className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-slate-800 text-sm mb-2">1. IoT Telemetry</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Slope stations sample soil moisture, MPU6050 tilt/vibration, and rain gauge data. Packets transmit over GSM/LoRa.
+            <h3 className="font-bold text-slate-900 text-sm mb-2">{t('how.step1Title')}</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              {t('how.step1Desc')}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative">
-            <span className="text-3xl font-black text-emerald-100 absolute top-4 right-4">02</span>
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#16A36A] flex items-center justify-center mb-4">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-slate-300 transition-all relative group">
+            <span className="text-3xl font-black text-slate-200 group-hover:text-emerald-200 transition-colors absolute top-4 right-4">02</span>
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center mb-4">
               <Activity className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-slate-800 text-sm mb-2">2. Risk Assessment Engine</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Unified backend calculates normalized risk score (0-100). Sudden tilt leaps trigger immediate priority alerts.
+            <h3 className="font-bold text-slate-900 text-sm mb-2">{t('how.step2Title')}</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              {t('how.step2Desc')}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative">
-            <span className="text-3xl font-black text-emerald-100 absolute top-4 right-4">03</span>
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#16A36A] flex items-center justify-center mb-4">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-slate-300 transition-all relative group">
+            <span className="text-3xl font-black text-slate-200 group-hover:text-emerald-200 transition-colors absolute top-4 right-4">03</span>
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center mb-4">
               <Camera className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-slate-800 text-sm mb-2">3. Citizen Ground Verification</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Commuters report blockages with mandatory live camera and GPS. BRO officials verify or reject from control room.
+            <h3 className="font-bold text-slate-900 text-sm mb-2">{t('how.step3Title')}</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              {t('how.step3Desc')}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative">
-            <span className="text-3xl font-black text-emerald-100 absolute top-4 right-4">04</span>
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#16A36A] flex items-center justify-center mb-4">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-slate-300 transition-all relative group">
+            <span className="text-3xl font-black text-slate-200 group-hover:text-emerald-200 transition-colors absolute top-4 right-4">04</span>
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center mb-4">
               <Radio className="w-5 h-5" />
             </div>
-            <h3 className="font-bold text-slate-800 text-sm mb-2">4. Real-Time Push & PWA</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Socket.IO broadcasts changes instantly. Offline service worker caches routes for offline mountain travel.
+            <h3 className="font-bold text-slate-900 text-sm mb-2">{t('how.step4Title')}</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              {t('how.step4Desc')}
             </p>
           </div>
         </div>
@@ -352,69 +376,69 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenReportModal }) =
 
       {/* 5. Risk Classification Matrix */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div className="bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <span className="text-xs font-bold text-[#16A36A] uppercase tracking-wider">Operational Standards</span>
-              <h2 className="text-2xl font-black text-slate-900">HillGuard Multi-Level Risk Hierarchy</h2>
+              <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">{t('risk.eyebrow')}</span>
+              <h2 className="text-2xl font-black text-slate-900">{t('risk.title')}</h2>
             </div>
-            <span className="text-xs text-slate-500">Configured in accordance with APDMA Mountain Safety Protocols</span>
+            <span className="text-xs text-slate-500">{t('risk.note')}</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
             {/* Green */}
-            <div className="p-4 rounded-xl border border-emerald-300 bg-emerald-50/70 space-y-2">
+            <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/70 space-y-2">
               <div className="flex items-center justify-between font-bold text-emerald-800">
                 <span className="flex items-center gap-1.5 text-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" /> GREEN
                 </span>
-                <span className="text-xs bg-emerald-200 px-2 py-0.5 rounded">0 - 29</span>
+                <span className="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded">0 - 29</span>
               </div>
-              <strong className="block text-emerald-950 font-semibold">SAFE CONDITIONS</strong>
+              <strong className="block text-emerald-950 font-semibold">{t('risk.greenTitle')}</strong>
               <p className="text-slate-600 leading-relaxed">
-                Sub-soil moisture within dry limits (&lt;35%), slope tilt stable, ambient vibration only. Normal mountain travel permitted.
+                {t('risk.greenDesc')}
               </p>
             </div>
 
             {/* Yellow */}
-            <div className="p-4 rounded-xl border border-amber-300 bg-amber-50/70 space-y-2">
+            <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/70 space-y-2">
               <div className="flex items-center justify-between font-bold text-amber-800">
                 <span className="flex items-center gap-1.5 text-sm">
                   <AlertTriangle className="w-4 h-4 text-amber-600" /> YELLOW
                 </span>
-                <span className="text-xs bg-amber-200 px-2 py-0.5 rounded">30 - 69</span>
+                <span className="text-xs bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded">30 - 69</span>
               </div>
-              <strong className="block text-amber-950 font-semibold">LANDSLIDE WARNING</strong>
+              <strong className="block text-amber-950 font-semibold">{t('risk.yellowTitle')}</strong>
               <p className="text-slate-600 leading-relaxed">
-                Elevated rainfall and rising pore water pressure (35-65%). Slow driving, maintain convoy distance, beware of shooting stones.
+                {t('risk.yellowDesc')}
               </p>
             </div>
 
             {/* Red */}
-            <div className="p-4 rounded-xl border border-red-300 bg-red-50/70 space-y-2">
-              <div className="flex items-center justify-between font-bold text-red-800">
+            <div className="p-4 rounded-xl border border-rose-200 bg-rose-50/70 space-y-2">
+              <div className="flex items-center justify-between font-bold text-rose-800">
                 <span className="flex items-center gap-1.5 text-sm">
-                  <AlertTriangle className="w-4 h-4 text-red-600" /> RED
+                  <AlertTriangle className="w-4 h-4 text-rose-600" /> RED
                 </span>
-                <span className="text-xs bg-red-200 px-2 py-0.5 rounded">70 - 100</span>
+                <span className="text-xs bg-rose-100 text-rose-800 font-semibold px-2 py-0.5 rounded">70 - 100</span>
               </div>
-              <strong className="block text-red-950 font-semibold">CRITICAL RISK</strong>
+              <strong className="block text-rose-950 font-semibold">{t('risk.redTitle')}</strong>
               <p className="text-slate-600 leading-relaxed">
-                Pore pressure saturation (&gt;75%), sudden slope displacement (&gt;15°), or debris vibration shockwave. High probability of mass slide.
+                {t('risk.redDesc')}
               </p>
             </div>
 
             {/* Blocked */}
-            <div className="p-4 rounded-xl border border-red-800 bg-red-900 text-white space-y-2">
-              <div className="flex items-center justify-between font-bold">
+            <div className="p-4 rounded-xl border-2 border-rose-300 bg-rose-50/80 space-y-2">
+              <div className="flex items-center justify-between font-bold text-rose-800">
                 <span className="flex items-center gap-1.5 text-sm">
                   ⛔ BLOCKED
                 </span>
-                <span className="text-xs bg-red-800 px-2 py-0.5 rounded">PHYSICAL</span>
+                <span className="text-xs bg-rose-200 text-rose-900 font-bold px-2 py-0.5 rounded">PHYSICAL</span>
               </div>
-              <strong className="block font-semibold">CONFIRMED CLOSURE</strong>
-              <p className="text-red-100 leading-relaxed">
-                Debris or rockfall physically obstructing roadway. Verified by official personnel. Highway closed to civilian traffic.
+              <strong className="block text-rose-950 font-semibold">{t('risk.blockedTitle')}</strong>
+              <p className="text-rose-900/80 leading-relaxed">
+                {t('risk.blockedDesc')}
               </p>
             </div>
           </div>
@@ -423,50 +447,50 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenReportModal }) =
 
       {/* 6. Hardware Preview (Phase 2 Readiness) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-[#123B2A] to-[#1c553d] text-white rounded-3xl p-8 sm:p-12 border border-[#256e50] shadow-xl space-y-6">
+        <div className="bg-gradient-to-b from-white to-emerald-50/20 rounded-3xl p-8 sm:p-12 border border-slate-200/90 shadow-sm space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">
-                Phase 2 Integration Preview
+              <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
+                {t('hardware.eyebrow')}
               </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-white">Physical IoT Sensor Architecture</h2>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900">{t('hardware.title')}</h2>
             </div>
             <Link
               to="/simulator"
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 self-start md:self-auto"
+              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm shadow-emerald-600/20 self-start md:self-auto"
             >
-              Open Simulator Controls <ArrowRight className="w-4 h-4" />
+              {t('hardware.button')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <p className="text-xs sm:text-sm text-slate-200 max-w-3xl leading-relaxed">
-            In Phase 1, all sensor streams are generated through our Hardware Simulator. In Phase 2, the exact same endpoints will receive live data from outdoor-hardened sensor nodes deployed on Himalayan slopes:
+          <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
+            {t('hardware.description')}
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
-            <div className="p-3 bg-black/20 rounded-xl border border-emerald-500/20 text-center">
-              <span className="text-xs font-bold block text-emerald-300">ESP32 MCU</span>
-              <span className="text-[11px] text-slate-300">Dual-Core 240MHz</span>
+            <div className="p-3.5 bg-slate-50 hover:bg-slate-100/80 transition rounded-xl border border-slate-200/80 text-center space-y-0.5">
+              <span className="text-xs font-bold block text-slate-900">{t('hardware.esp32')}</span>
+              <span className="text-[11px] text-emerald-700 font-medium">{t('hardware.esp32Spec')}</span>
             </div>
-            <div className="p-3 bg-black/20 rounded-xl border border-emerald-500/20 text-center">
-              <span className="text-xs font-bold block text-emerald-300">Soil Moisture</span>
-              <span className="text-[11px] text-slate-300">Capacitive v1.2</span>
+            <div className="p-3.5 bg-slate-50 hover:bg-slate-100/80 transition rounded-xl border border-slate-200/80 text-center space-y-0.5">
+              <span className="text-xs font-bold block text-slate-900">{t('hardware.soil')}</span>
+              <span className="text-[11px] text-emerald-700 font-medium">{t('hardware.soilSpec')}</span>
             </div>
-            <div className="p-3 bg-black/20 rounded-xl border border-emerald-500/20 text-center">
-              <span className="text-xs font-bold block text-emerald-300">MPU6050</span>
-              <span className="text-[11px] text-slate-300">6-DOF Tilt/Gyro</span>
+            <div className="p-3.5 bg-slate-50 hover:bg-slate-100/80 transition rounded-xl border border-slate-200/80 text-center space-y-0.5">
+              <span className="text-xs font-bold block text-slate-900">{t('hardware.mpu')}</span>
+              <span className="text-[11px] text-emerald-700 font-medium">{t('hardware.mpuSpec')}</span>
             </div>
-            <div className="p-3 bg-black/20 rounded-xl border border-emerald-500/20 text-center">
-              <span className="text-xs font-bold block text-emerald-300">Rain Gauge</span>
-              <span className="text-[11px] text-slate-300">Optical Tipping</span>
+            <div className="p-3.5 bg-slate-50 hover:bg-slate-100/80 transition rounded-xl border border-slate-200/80 text-center space-y-0.5">
+              <span className="text-xs font-bold block text-slate-900">{t('hardware.rain')}</span>
+              <span className="text-[11px] text-emerald-700 font-medium">{t('hardware.rainSpec')}</span>
             </div>
-            <div className="p-3 bg-black/20 rounded-xl border border-emerald-500/20 text-center">
-              <span className="text-xs font-bold block text-emerald-300">SIM800L / LoRa</span>
-              <span className="text-[11px] text-slate-300">Dual GSM Fallback</span>
+            <div className="p-3.5 bg-slate-50 hover:bg-slate-100/80 transition rounded-xl border border-slate-200/80 text-center space-y-0.5">
+              <span className="text-xs font-bold block text-slate-900">{t('hardware.gsm')}</span>
+              <span className="text-[11px] text-emerald-700 font-medium">{t('hardware.gsmSpec')}</span>
             </div>
-            <div className="p-3 bg-black/20 rounded-xl border border-emerald-500/20 text-center">
-              <span className="text-xs font-bold block text-emerald-300">Solar LiFePO4</span>
-              <span className="text-[11px] text-slate-300">Autonomous Power</span>
+            <div className="p-3.5 bg-slate-50 hover:bg-slate-100/80 transition rounded-xl border border-slate-200/80 text-center space-y-0.5">
+              <span className="text-xs font-bold block text-slate-900">{t('hardware.solar')}</span>
+              <span className="text-[11px] text-emerald-700 font-medium">{t('hardware.solarSpec')}</span>
             </div>
           </div>
         </div>

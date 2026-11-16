@@ -6,7 +6,9 @@ const weatherService = require('../services/weatherService');
 // @access  Public
 const getTravellerDashboard = async (req, res, next) => {
   try {
-    const roads = await Road.find().sort({ currentRiskScore: -1 });
+    const roads = await Road.find()
+      .populate('sensorNodes', 'nodeId name status batteryLevel location isSimulated lastSeen')
+      .sort({ currentRiskScore: -1 });
 
     const totalRoads = roads.length;
     const safeRoads = roads.filter(r => r.riskStatus === 'GREEN').length;
@@ -61,7 +63,7 @@ const getOfficialDashboard = async (req, res, next) => {
   try {
     const [nodes, roads, pendingReports, activeAlerts, recentTelemetry] = await Promise.all([
       SensorNode.find().populate('road', 'roadCode name riskStatus passability'),
-      Road.find(),
+      Road.find().populate('sensorNodes', 'nodeId name status batteryLevel location isSimulated lastSeen'),
       Report.find({ status: { $in: ['NEW', 'UNDER_REVIEW'] } }).sort({ createdAt: -1 }).limit(10),
       Alert.find({ status: 'ACTIVE' }).sort({ issuedAt: -1 }),
       Telemetry.find().sort({ timestamp: -1 }).limit(30)

@@ -232,32 +232,39 @@ export const RoadRiskMap: React.FC<RoadRiskMapProps> = ({
 
           {/* Render Monitored Roads (Polylines & Endpoints) */}
           {filteredRoads.map((road) => {
-            const positions: [number, number][] = road.coordinates.map((c) => [c.latitude, c.longitude]);
+            const positions: [number, number][] = (road.coordinates || [])
+              .filter((c) => c && typeof c.latitude === 'number' && typeof c.longitude === 'number')
+              .map((c) => [c.latitude, c.longitude]);
             const isBlocked = road.passability === 'BLOCKED' || road.isBlockageConfirmed;
             const lineColor = getPolylineColor(road.riskStatus, isBlocked);
 
             return (
               <React.Fragment key={road._id}>
                 {/* Road Polyline */}
-                <Polyline
-                  positions={positions}
-                  pathOptions={{
-                    color: lineColor,
-                    weight: road._id === selectedRoadId ? 7 : 5,
-                    opacity: 0.85,
-                    dashArray: isBlocked ? '8, 8' : undefined
-                  }}
-                  eventHandlers={{
-                    click: () => {
-                      if (onSelectRoad) onSelectRoad(road);
-                    }
-                  }}
-                />
+                {positions.length > 0 && (
+                  <Polyline
+                    positions={positions}
+                    pathOptions={{
+                      color: lineColor,
+                      weight: road._id === selectedRoadId ? 7 : 5,
+                      opacity: 0.85,
+                      dashArray: isBlocked ? '8, 8' : undefined
+                    }}
+                    eventHandlers={{
+                      click: () => {
+                        if (onSelectRoad) onSelectRoad(road);
+                      }
+                    }}
+                  />
+                )}
 
                 {/* Road Blockage Marker if Road is Confirmed Blocked */}
-                {isBlocked && (
+                {isBlocked && road.coordinates && road.coordinates.length > 0 && (
                   <Marker
-                    position={[road.coordinates[Math.floor(road.coordinates.length / 2)].latitude, road.coordinates[Math.floor(road.coordinates.length / 2)].longitude]}
+                    position={[
+                      road.coordinates[Math.floor(road.coordinates.length / 2)]?.latitude ?? 27.35,
+                      road.coordinates[Math.floor(road.coordinates.length / 2)]?.longitude ?? 93.30
+                    ]}
                     icon={createBlockageIcon()}
                   >
                     <Popup>
@@ -280,6 +287,16 @@ export const RoadRiskMap: React.FC<RoadRiskMapProps> = ({
 
                 {/* Sensor Node Markers for this Road */}
                 {road.sensorNodes && road.sensorNodes.map((node) => {
+                  if (
+                    !node ||
+                    typeof node !== 'object' ||
+                    !node.location ||
+                    typeof node.location.latitude !== 'number' ||
+                    typeof node.location.longitude !== 'number'
+                  ) {
+                    return null;
+                  }
+
                   const nodeRisk = road.riskStatus;
                   const nodeStatus = node.status === 'OFFLINE' ? 'OFFLINE' : nodeRisk;
 

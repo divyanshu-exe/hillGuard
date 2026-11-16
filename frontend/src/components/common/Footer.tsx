@@ -1,7 +1,10 @@
 import React from 'react';
-import { Mountain, Shield, GraduationCap, Mail, MapPin, Heart } from 'lucide-react';
+import { Mountain, Shield, GraduationCap, MapPin } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export const Footer: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-[#123B2A] text-slate-300 border-t border-[#1e523b] pt-12 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,11 +20,11 @@ export const Footer: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed mb-4">
-              Real-time landslide monitoring, intelligent environmental risk assessment, and verified road-blockage alerts for safer journeys across the hills of Arunachal Pradesh.
+              {t('footer.mission')}
             </p>
             <div className="flex items-center gap-2 text-xs text-emerald-400 font-medium">
               <Shield className="w-4 h-4" />
-              <span>Phase 1 Software • Phase 2 IoT-Ready</span>
+              <span>{t('footer.phaseBadge')}</span>
             </div>
           </div>
 
@@ -29,21 +32,21 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="text-white text-sm font-semibold mb-4 flex items-center gap-2">
               <GraduationCap className="w-4 h-4 text-[#16A36A]" />
-              Academic Project
+              {t('footer.academic')}
             </h4>
             <div className="space-y-2 text-xs text-slate-300">
-              <p className="font-medium text-white">National Institute of Technology Arunachal Pradesh</p>
-              <p>Department of Computer Science & Engineering</p>
-              <p className="text-emerald-300">B.Tech 3rd Year Minor Project</p>
+              <p className="font-medium text-white">{t('footer.institute')}</p>
+              <p>{t('footer.dept')}</p>
+              <p className="text-emerald-300">{t('footer.minorProject')}</p>
               <p className="pt-1 text-slate-400">
-                Project Guide: <strong className="text-white">Dr. Koj Sambyo</strong>
+                {t('footer.guide')} <strong className="text-white">Dr. Koj Sambyo</strong>
               </p>
             </div>
           </div>
 
           {/* Col 3: Project Team */}
           <div>
-            <h4 className="text-white text-sm font-semibold mb-4">Project Developers</h4>
+            <h4 className="text-white text-sm font-semibold mb-4">{t('footer.developers')}</h4>
             <ul className="text-xs space-y-1.5 text-slate-300">
               <li className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Divyanshu Gupta
@@ -81,7 +84,7 @@ export const Footer: React.FC = () => {
         <div className="border-t border-[#1b4e38] pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
           <p>© {new Date().getFullYear()} HillGuard. All Rights Reserved. National Institute of Technology Arunachal Pradesh.</p>
           <div className="flex items-center gap-4 text-slate-300">
-            <span className="italic">"Know the Road Before You Go"</span>
+            <span className="italic">"{t('hero.titleLine1')} {t('hero.titleLine2')}"</span>
           </div>
         </div>
       </div>
